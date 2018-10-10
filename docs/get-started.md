@@ -6,6 +6,8 @@ You’ll then be ready to learn how to build your own features. Our tutorial for
 
 ![Instant action in the FPS Starter Project]({{assetRoot}}assets/fps/headline.png)
 
+<%(TOC)%>
+
 ## Setup
 
 <%(Callout type="info" message="Setting up SpatialOS, the GDK, the FPS Starter Project, and their dependencies should take you about 10 mins.")%>

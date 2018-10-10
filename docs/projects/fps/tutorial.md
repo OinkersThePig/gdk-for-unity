@@ -1,5 +1,7 @@
 # Health pick-up tutorial
 
+<%(TOC)%>
+
 Before starting this tutorial, make sure you have followed the [Get started guide]({{urlRoot}}/get-started).
 
 # What will be covered?
