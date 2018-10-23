@@ -86,7 +86,7 @@ namespace Improbable.Gdk.Tests.BlittableTypes
                 long longField,
                 float floatField,
                 double doubleField
-        )
+            )
             {
                 var schemaComponentData = new global::Improbable.Worker.Core.SchemaComponentData(1001);
                 var obj = schemaComponentData.GetFields();
@@ -107,6 +107,17 @@ namespace Improbable.Gdk.Tests.BlittableTypes
                 }
                 return new global::Improbable.Worker.Core.ComponentData(schemaComponentData);
             }
+        }
+
+        public struct Snapshot : ISpatialComponentSnapshot
+        {
+            public uint ComponentId => 1001;
+
+            public BlittableBool BoolField;
+            public int IntField;
+            public long LongField;
+            public float FloatField;
+            public double DoubleField;
         }
 
         public static class Serialization
@@ -199,6 +210,33 @@ namespace Improbable.Gdk.Tests.BlittableTypes
                     
                 }
                 return update;
+            }
+
+            public static Improbable.Gdk.Tests.BlittableTypes.BlittableComponent.Snapshot DeserializeSnapshot(global::Improbable.Worker.Core.SchemaObject obj, global::Unity.Entities.World world)
+            {
+                var component = new Improbable.Gdk.Tests.BlittableTypes.BlittableComponent.Snapshot();
+
+                {
+                    component.BoolField = obj.GetBool(1);
+                }
+
+                {
+                    component.IntField = obj.GetInt32(2);
+                }
+
+                {
+                    component.LongField = obj.GetInt64(3);
+                }
+
+                {
+                    component.FloatField = obj.GetFloat(4);
+                }
+
+                {
+                    component.DoubleField = obj.GetDouble(5);
+                }
+
+                return component;
             }
 
             public static void ApplyUpdate(global::Improbable.Worker.Core.SchemaComponentUpdate updateObj, ref Improbable.Gdk.Tests.BlittableTypes.BlittableComponent.Component component)
@@ -294,9 +332,25 @@ namespace Improbable.Gdk.Tests.BlittableTypes
                 return Serialization.DeserializeUpdate(schemaDataOpt.Value);
             }
 
+            private static Snapshot DeserializeSnapshot(ComponentData snapshot, World world)
+            {
+                var schemaDataOpt = snapshot.SchemaData;
+                if (!schemaDataOpt.HasValue)
+                {
+                    throw new ArgumentException($"Can not deserialize an empty {nameof(ComponentData)}");
+                }
+
+                return Serialization.DeserializeSnapshot(schemaDataOpt.Value.GetFields(), world);
+            }
+
             public void InvokeHandler(Dynamic.IHandler handler)
             {
                 handler.Accept<Component, Update>(BlittableComponent.ComponentId, DeserializeData, DeserializeUpdate);
+            }
+
+            public void InvokeSnapshotHandler(DynamicSnapshot.ISnapshotHandler handler)
+            {
+                handler.Accept<Snapshot>(BlittableComponent.ComponentId, DeserializeSnapshot);
             }
         }
     }
