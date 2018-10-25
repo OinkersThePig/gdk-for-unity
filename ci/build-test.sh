@@ -4,6 +4,8 @@ set -e -u -o -x pipefail
 
 cd "$(dirname "$0")/../"
 
+source ".shared-ci/scripts/pinned-tools.sh"
+
 # Get shared CI and prepare unity
 ci/bootstrap.sh
 .shared-ci/scripts/prepare-unity.sh
@@ -11,8 +13,6 @@ ci/bootstrap.sh
 if isWindows; then
     .shared-ci/scripts/prepare-unity-mobile.sh "$(pwd)/logs/PrepareUnityMobile.log"
 fi
-
-source ".shared-ci/scripts/pinned-tools.sh"
 
 ci/test.sh
 .shared-ci/scripts/build.sh "workers/unity" UnityClient local "$(pwd)/logs/UnityClientBuild.log"
